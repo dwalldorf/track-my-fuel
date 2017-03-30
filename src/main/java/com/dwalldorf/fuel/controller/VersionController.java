@@ -1,6 +1,6 @@
 package com.dwalldorf.fuel.controller;
 
-import com.dwalldorf.trackmytime.config.ApplicationProperties;
+import com.dwalldorf.fuel.config.ApplicationProperties;
 import javax.inject.Inject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
