@@ -16,10 +16,11 @@ public class RefuelingForm implements Serializable {
 
     private Long kilometers;
 
-    private Double liters;
+    private Float liters;
 
-    private Double cost;
+    private Float cost;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "YYYY-MM-dd")
     private DateTime date;
 
     private String comment;
@@ -33,6 +34,10 @@ public class RefuelingForm implements Serializable {
                 .setCost(getCost())
                 .setDate(getDate())
                 .setComment(getComment());
+    }
+
+    public static RefuelingForm fromModel(Refueling model) {
+        return new RefuelingForm();
     }
 
     public String getId() {
@@ -59,19 +64,19 @@ public class RefuelingForm implements Serializable {
         this.kilometers = kilometers;
     }
 
-    public Double getLiters() {
+    public Float getLiters() {
         return liters;
     }
 
-    public void setLiters(Double liters) {
+    public void setLiters(Float liters) {
         this.liters = liters;
     }
 
-    public Double getCost() {
+    public Float getCost() {
         return cost;
     }
 
-    public void setCost(Double cost) {
+    public void setCost(Float cost) {
         this.cost = cost;
     }
 

@@ -17,9 +17,9 @@ public class Refueling implements HasUserId, Serializable {
 
     private Long kilometers;
 
-    private Double liters;
+    private Float liters;
 
-    private Double cost;
+    private Float cost;
 
     private String comment;
 
@@ -66,20 +66,20 @@ public class Refueling implements HasUserId, Serializable {
         return this;
     }
 
-    public Double getLiters() {
+    public Float getLiters() {
         return liters;
     }
 
-    public Refueling setLiters(Double liters) {
+    public Refueling setLiters(Float liters) {
         this.liters = liters;
         return this;
     }
 
-    public Double getCost() {
+    public Float getCost() {
         return cost;
     }
 
-    public Refueling setCost(Double cost) {
+    public Refueling setCost(Float cost) {
         this.cost = cost;
         return this;
     }

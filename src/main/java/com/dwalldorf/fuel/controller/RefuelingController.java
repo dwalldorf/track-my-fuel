@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +23,7 @@ public class RefuelingController {
     private static final String ROUTE_PREFIX = "/refueling";
     private static final String ROUTE_PAGE_LIST = ROUTE_PREFIX + "/list";
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
+    private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit}";
 
     private static final String VIEW_PREFIX = "/refueling/";
     private static final String VIEW_LIST = VIEW_PREFIX + "list";
@@ -37,7 +39,7 @@ public class RefuelingController {
     }
 
     @ModelAttribute("refuelings")
-    public List<Refueling> allEntries() {
+    public List<Refueling> refuelings() {
         return refuelingService.findAllByUser(userService.getCurrentUserId());
     }
 
@@ -61,6 +63,21 @@ public class RefuelingController {
         return mav;
     }
 
+    @GetMapping(ROUTE_PAGE_EDIT)
+    public ModelAndView editPage(@PathVariable String id) {
+        Refueling refueling = refuelingService.findById(id);
+        if (refueling == null) {
+            return RouteUtil.redirectString(ROUTE_PAGE_LIST);
+        }
+
+        userService.verifyOwner(refueling);
+
+        ModelAndView mav = new ModelAndView(VIEW_ADD);
+
+
+        mav.addObject("refuelingForm",)
+    }
+
     @PostMapping(ROUTE_PREFIX)
     public String saveAction(@ModelAttribute @Valid RefuelingForm refuelingForm) {
         Refueling refueling = refuelingForm.toModel();
@@ -71,6 +88,8 @@ public class RefuelingController {
                 throw new NotFoundException();
             }
             userService.verifyOwner(persistedRefueling);
+        } else {
+            refueling.setUserId(userService.getCurrentUserId());
         }
 
         refuelingService.save(refueling);
