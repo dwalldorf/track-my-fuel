@@ -1,5 +1,6 @@
 package com.dwalldorf.fuel.form.refueling;
 
+import com.dwalldorf.fuel.model.Refueling;
 import java.io.Serializable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -22,6 +23,17 @@ public class RefuelingForm implements Serializable {
     private DateTime date;
 
     private String comment;
+
+    public Refueling toModel() {
+        return new Refueling()
+                .setId(getId())
+                .setUserId(getUserId())
+                .setKilometers(getKilometers())
+                .setLiters(getLiters())
+                .setCost(getCost())
+                .setDate(getDate())
+                .setComment(getComment());
+    }
 
     public String getId() {
         return id;

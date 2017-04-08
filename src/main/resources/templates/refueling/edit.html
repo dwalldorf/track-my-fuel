@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label for="kilometers" class="col-xs-2 control-label">Kilometers:</label>
                     <div class="col-xs-10">
-                        <input type="text"
+                        <input type="number"
                                th:field="*{kilometers}"
                                name="kilometers"
                                id="kilometers"
@@ -88,6 +88,6 @@
 </div>
 
 <footer th:replace="layout::site-footer"></footer>
-<div th:replace="fragments::datetimepicker('#date')"></div>
+<div th:replace="fragments::datepicker('#date')"></div>
 </body>
 </html>

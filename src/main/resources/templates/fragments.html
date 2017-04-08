@@ -13,5 +13,15 @@
         /*]]>*/
     </script>
 </div>
+<div th:fragment="datepicker(elementId)">
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var dateTimeConfig = {format: 'YYYY-MM-DD'},
+            elementId = /*[[${elementId}]]*/ null;
+
+        $(elementId).datetimepicker(dateTimeConfig);
+        /*]]>*/
+    </script>
+</div>
 </body>
 </html>

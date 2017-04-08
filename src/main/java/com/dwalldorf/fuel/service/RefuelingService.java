@@ -19,4 +19,12 @@ public class RefuelingService {
     public List<Refueling> findAllByUser(String userId) {
         return refuelingRepository.findAllByUserId(userId);
     }
+
+    public void save(Refueling refueling) {
+        refuelingRepository.save(refueling);
+    }
+
+    public Refueling findById(String id) {
+        return refuelingRepository.findOne(id);
+    }
 }

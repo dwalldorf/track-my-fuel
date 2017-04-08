@@ -88,7 +88,8 @@ public class Refueling implements HasUserId, Serializable {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public Refueling setComment(String comment) {
         this.comment = comment;
+        return this;
     }
 }
