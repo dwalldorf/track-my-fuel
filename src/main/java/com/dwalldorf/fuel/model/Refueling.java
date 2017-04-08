@@ -1,6 +1,7 @@
 package com.dwalldorf.fuel.model;
 
 import java.io.Serializable;
+import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Id;
 
 public class Refueling implements HasUserId, Serializable {
@@ -12,11 +13,15 @@ public class Refueling implements HasUserId, Serializable {
 
     private String userId;
 
-    private Long milage;
+    private DateTime date;
+
+    private Long kilometers;
 
     private Double liters;
 
     private Double cost;
+
+    private String comment;
 
     @Override
     public String getObjectType() {
@@ -43,12 +48,21 @@ public class Refueling implements HasUserId, Serializable {
         return this;
     }
 
-    public Long getMilage() {
-        return milage;
+    public DateTime getDate() {
+        return date;
     }
 
-    public Refueling setMilage(Long milage) {
-        this.milage = milage;
+    public Refueling setDate(DateTime date) {
+        this.date = date;
+        return this;
+    }
+
+    public Long getKilometers() {
+        return kilometers;
+    }
+
+    public Refueling setKilometers(Long kilometers) {
+        this.kilometers = kilometers;
         return this;
     }
 
@@ -68,5 +82,13 @@ public class Refueling implements HasUserId, Serializable {
     public Refueling setCost(Double cost) {
         this.cost = cost;
         return this;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
