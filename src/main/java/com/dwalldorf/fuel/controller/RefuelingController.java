@@ -55,8 +55,8 @@ public class RefuelingController {
 
     @GetMapping(ROUTE_PAGE_ADD)
     public ModelAndView addPage() {
-        RefuelingForm refuelingForm = new RefuelingForm();
-        refuelingForm.setDate(new DateTime());
+        RefuelingForm refuelingForm = new RefuelingForm()
+                .setDate(new DateTime());
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
         mav.addObject("refuelingForm", refuelingForm);
