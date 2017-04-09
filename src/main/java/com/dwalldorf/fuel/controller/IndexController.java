@@ -11,7 +11,7 @@ public class IndexController {
     private static final String VIEW_INDEX = "/index";
 
     @GetMapping(ROUTE_PAGE_INDEX)
-    public String index() {
+    public String indexPage() {
         return VIEW_INDEX;
     }
 }

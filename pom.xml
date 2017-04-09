@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dwalldorf</groupId>
-    <artifactId>fuel-consumption</artifactId>
+    <artifactId>track-my-fuel</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <description>Fuel consumption tracking app</description>
     <packaging>jar</packaging>

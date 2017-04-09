@@ -24,9 +24,12 @@
             <div class="col-xs-10">
                 <ul class="nav nav-tabs" sec:authorize="isAuthenticated()">
                     <li role="presentation"
-                        th:classappend="${#httpServletRequest.getRequestURI()=='/'||
-                        #httpServletRequest.getRequestURI()=='/'?'active':''}">
-                        <a th:href="@{/work}">Home</a>
+                        th:classappend="${#httpServletRequest.getRequestURI()=='/'?'active':''}">
+                        <a th:href="@{/}">Home</a>
+                    </li>
+                    <li role="presentation"
+                        th:classappend="${#httpServletRequest.getRequestURI().startsWith('refueling')?'active':''}">
+                        <a th:href="@{/refueling}">Refuelings</a>
                     </li>
                 </ul>
 
