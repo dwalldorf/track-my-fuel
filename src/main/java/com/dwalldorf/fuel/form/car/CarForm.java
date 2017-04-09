@@ -30,7 +30,17 @@ public class CarForm implements ThymeleafForm<Car, CarForm> {
 
     @Override
     public CarForm fromModel(Car model) {
-        return null;
+        if (model == null) {
+            return null;
+        }
+
+        return new CarForm()
+                .setId(model.getId())
+                .setUserId(model.getUserId())
+                .setManufacturer(model.getManufacturer())
+                .setModelName(model.getModelName())
+                .setYear(model.getYear())
+                .setLicensePlate(model.getLicensePlate());
     }
 
     public String getId() {
