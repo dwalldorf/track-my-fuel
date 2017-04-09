@@ -37,47 +37,58 @@ public class RefuelingForm implements Serializable {
     }
 
     public static RefuelingForm fromModel(Refueling model) {
-        return new RefuelingForm();
+        return new RefuelingForm()
+                .setId(model.getId())
+                .setUserId(model.getUserId())
+                .setKilometers(model.getKilometers())
+                .setLiters(model.getLiters())
+                .setCost(model.getCost())
+                .setComment(model.getComment());
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public RefuelingForm setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public RefuelingForm setUserId(String userId) {
         this.userId = userId;
+        return this;
     }
 
     public Long getKilometers() {
         return kilometers;
     }
 
-    public void setKilometers(Long kilometers) {
+    public RefuelingForm setKilometers(Long kilometers) {
         this.kilometers = kilometers;
+        return this;
     }
 
     public Float getLiters() {
         return liters;
     }
 
-    public void setLiters(Float liters) {
+    public RefuelingForm setLiters(Float liters) {
         this.liters = liters;
+        return this;
     }
 
     public Float getCost() {
         return cost;
     }
 
-    public void setCost(Float cost) {
+    public RefuelingForm setCost(Float cost) {
         this.cost = cost;
+        return this;
     }
 
     public DateTime getDate() {
@@ -91,19 +102,17 @@ public class RefuelingForm implements Serializable {
         return FORMATTER.print(new DateTime(date));
     }
 
-    public void setDate(DateTime date) {
+    public RefuelingForm setDate(DateTime date) {
         this.date = date;
-    }
-
-    public static DateTimeFormatter getFORMATTER() {
-        return FORMATTER;
+        return this;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public RefuelingForm setComment(String comment) {
         this.comment = comment;
+        return this;
     }
 }

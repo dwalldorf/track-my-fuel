@@ -23,7 +23,7 @@ public class RefuelingController {
     private static final String ROUTE_PREFIX = "/refueling";
     private static final String ROUTE_PAGE_LIST = ROUTE_PREFIX + "/list";
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
-    private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit}";
+    private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit";
 
     private static final String VIEW_PREFIX = "/refueling/";
     private static final String VIEW_LIST = VIEW_PREFIX + "list";
@@ -67,15 +67,14 @@ public class RefuelingController {
     public ModelAndView editPage(@PathVariable String id) {
         Refueling refueling = refuelingService.findById(id);
         if (refueling == null) {
-            return RouteUtil.redirectString(ROUTE_PAGE_LIST);
+            throw new NotFoundException();
         }
 
         userService.verifyOwner(refueling);
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
-
-
-        mav.addObject("refuelingForm",)
+        mav.addObject("refuelingForm", RefuelingForm.fromModel(refueling));
+        return mav;
     }
 
     @PostMapping(ROUTE_PREFIX)
