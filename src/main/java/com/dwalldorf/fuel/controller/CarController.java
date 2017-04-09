@@ -27,11 +27,11 @@ public class CarController {
 
     @GetMapping(ROUTE_PREFIX)
     public String indexAction() {
-        return listAction();
+        return listPage();
     }
 
 
-    public String listAction() {
+    public String listPage() {
         return VIEW_LIST;
     }
 }

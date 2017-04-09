@@ -25,7 +25,7 @@ public class CarControllerTest extends BaseTest {
 
     @Test
     public void testIndexAction_ReturnsListPage() {
-        final String expectedViewName = carController.listAction();
+        final String expectedViewName = carController.listPage();
         final String actualViewName = carController.indexAction();
 
         assertEquals(expectedViewName, actualViewName);
@@ -34,7 +34,7 @@ public class CarControllerTest extends BaseTest {
     @Test
     public void testListPage_ViewName() {
         final String expectedViewName = "/car//list";
-        final String actualViewName = carController.listAction();
+        final String actualViewName = carController.listPage();
 
         assertEquals(expectedViewName, actualViewName);
     }
