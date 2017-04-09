@@ -30,8 +30,9 @@ public class Car implements HasUserId, Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public Car setId(String id) {
         this.id = id;
+        return this;
     }
 
     @Override
@@ -39,39 +40,44 @@ public class Car implements HasUserId, Serializable {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public Car setUserId(String userId) {
         this.userId = userId;
+        return this;
     }
 
     public String getManufacturer() {
         return manufacturer;
     }
 
-    public void setManufacturer(String manufacturer) {
+    public Car setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
+        return this;
     }
 
     public String getModelName() {
         return modelName;
     }
 
-    public void setModelName(String modelName) {
+    public Car setModelName(String modelName) {
         this.modelName = modelName;
+        return this;
     }
 
     public String getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public Car setYear(String year) {
         this.year = year;
+        return this;
     }
 
     public String getLicensePlate() {
         return licensePlate;
     }
 
-    public void setLicensePlate(String licensePlate) {
+    public Car setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
+        return this;
     }
 }
