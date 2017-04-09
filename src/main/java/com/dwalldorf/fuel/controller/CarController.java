@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +23,7 @@ public class CarController {
 
     private static final String ROUTE_PREFIX = "/cars";
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
+    private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit";
 
     private static final String VIEW_PREFIX = "/car/";
     private static final String VIEW_LIST = VIEW_PREFIX + "list";
@@ -73,6 +75,19 @@ public class CarController {
         ModelAndView mav = new ModelAndView(VIEW_EDIT);
         mav.addObject("carForm", new CarForm());
 
+        return mav;
+    }
+
+    @GetMapping(ROUTE_PAGE_EDIT)
+    public ModelAndView editPage(@PathVariable String id) {
+        Car car = carService.findById(id);
+        if (car == null) {
+            throw new NotFoundException();
+        }
+        userService.verifyOwner(car);
+
+        ModelAndView mav = new ModelAndView(VIEW_EDIT);
+        mav.addObject("carForm", new CarForm().fromModel(car));
         return mav;
     }
 

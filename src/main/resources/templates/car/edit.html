@@ -7,18 +7,19 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-offset-2 col-xs-8">
-            <form th:action="@{/cars}" th:object="${carForm}" th:method="post" class="form-horizontal">
-                <h2 th:if="${!#strings.isEmpty(id)}">Edit Car '<span th:text="*{name}"></span>'</h2>
+            <form th:action="@{/cars}" th:object="${carForm}" th:method="POST" class="form-horizontal">
+                <h2 th:if="${!#strings.isEmpty(id)}">
+                    Edit <span th:text="*{manufacturer}"></span>
+                </h2>
                 <h2 th:if="${#strings.isEmpty(id)}">New Car</h2>
 
                 <input type="hidden"
-                       th:if="${!#strings.isEmpty(id)}"
                        name="id"
-                       th:value="${id}"/>
+                       th:if="${!#strings.isEmpty(id)}"
+                       th:field="*{id}"/>
                 <input type="hidden"
-                       th:if="${!#strings.isEmpty(userId)}"
                        name="userId"
-                       th:value="${userId}"/>
+                       th:field="*{userId}"/>
 
                 <div class="form-group">
                     <label for="manufacturer" class="col-xs-2 control-label">Manufacturer:</label>
