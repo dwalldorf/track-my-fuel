@@ -18,21 +18,22 @@
 
             <table th:unless="${#lists.isEmpty(cars)}" class="table table-striped table-hover">
                 <thead>
-                <th class="col-xs-4 col-sm-2 col-lg-1">Actions</th>
-                <th class="col-xs-4 col-sm-2 col-lg-1">Name</th>
+                <th class="col-xs-4 col-lg-1">Actions</th>
+                <th class="col-xs-4 col-lg-11">Name</th>
                 </thead>
                 <tbody>
                 <tr th:each="car:${cars}">
                     <td>
-                        <a th:href="@{/cars/{id}/edit(id=${entry.id})}" class="btn btn-default btn-sm">
+                        <a th:href="@{/cars/{id}/edit(id=${car.id})}" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a th:href="@{/cars/{id}/delete(id=${entry.id})}" class="btn btn-default btn-sm">
+                        <a th:href="@{/cars/{id}/delete(id=${car.id})}" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
                     </td>
                     <td>
-                        <span th:text="*{car.name}"></span>
+                        <span th:text="*{car.manufacturer}"></span>
+                        <span th:text="*{car.modelName}"></span>
                     </td>
                 </tr>
                 </tbody>
