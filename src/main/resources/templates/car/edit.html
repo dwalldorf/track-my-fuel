@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout::html-head('Entry Details')"></head>
+<body>
+<header th:replace="layout::site-header"></header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-offset-2 col-xs-8">
+            <form th:action="@{/cars}" th:object="${carForm}" th:method="post" class="form-horizontal">
+                <h2 th:if="${!#strings.isEmpty(id)}">Edit Car '<span th:text="*{name}"></span>'</h2>
+                <h2 th:if="${#strings.isEmpty(id)}">New Car</h2>
+
+                <input type="hidden"
+                       th:if="${!#strings.isEmpty(id)}"
+                       name="id"
+                       th:value="${id}"/>
+                <input type="hidden"
+                       th:if="${!#strings.isEmpty(userId)}"
+                       name="userId"
+                       th:value="${userId}"/>
+
+                <div class="form-group">
+                    <label for="manufacturer" class="col-xs-2 control-label">Manufacturer:</label>
+                    <div class="col-xs-10">
+                        <input type="text"
+                               th:field="*{manufacturer}"
+                               name="manufacturer"
+                               id="manufacturer"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="model" class="col-xs-2 control-label">Model:</label>
+                    <div class="col-xs-10">
+                        <input type="text"
+                               th:field="*{modelName}"
+                               name="model"
+                               id="model"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="year" class="col-xs-2 control-label">Year:</label>
+                    <div class="col-xs-10">
+                        <select id="year"
+                                name="year"
+                                th:field="*{year}"
+                                class="form-control">
+                            <option th:each="year:${yearValues}"
+                                    th:value="${year}"
+                                    th:text="${year}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="license-plate" class="col-xs-2 control-label">License Plate:</label>
+                    <div class="col-xs-10">
+                        <input type="text"
+                               th:field="*{licensePlate}"
+                               name="license-plate"
+                               id="license-plate"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-offset-2 col-xs-10">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a th:href="@{/cars}" class="btn btn-default">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="layout::site-footer"></footer>
+<div th:replace="fragments::datepicker('#date')"></div>
+</body>
+</html>

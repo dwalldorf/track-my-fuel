@@ -4,8 +4,10 @@ import com.dwalldorf.fuel.form.car.CarForm;
 import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.service.CarService;
 import com.dwalldorf.fuel.service.UserService;
+import java.util.LinkedList;
 import java.util.List;
 import javax.inject.Inject;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,6 +26,18 @@ public class CarController {
     private final CarService carService;
     private final UserService userService;
 
+    private static List<Integer> yearValues;
+
+    static {
+        final int oldestYearPossible = 1880;
+        final int newestYearPossible = new DateTime().getYear() + 1;
+
+        yearValues = new LinkedList<>();
+        for (int i = newestYearPossible; i >= oldestYearPossible; i--) {
+            yearValues.add(i);
+        }
+    }
+
     @Inject
     public CarController(CarService carService, UserService userService) {
         this.carService = carService;
@@ -31,8 +45,13 @@ public class CarController {
     }
 
     @ModelAttribute("cars")
-    public List<Car> cars() {
+    public List<Car> getCars() {
         return carService.findByUserId(userService.getCurrentUserId());
+    }
+
+    @ModelAttribute("yearValues")
+    public List<Integer> getYearValues() {
+        return yearValues;
     }
 
     @GetMapping(ROUTE_PREFIX)
