@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public interface ThymeleafForm<T, F> extends Serializable {
 
-    T toModel(F form);
+    T toModel();
 
     F fromModel(T model);
 }

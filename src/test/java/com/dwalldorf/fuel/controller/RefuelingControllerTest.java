@@ -119,7 +119,7 @@ public class RefuelingControllerTest extends BaseTest {
         final Refueling mockPersistedRefueling = new Refueling().setId(id);
         when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
 
-        refuelingController.saveAction(RefuelingForm.fromModel(mockPersistedRefueling));
+        refuelingController.saveAction(new RefuelingForm().fromModel(mockPersistedRefueling));
 
         verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
     }

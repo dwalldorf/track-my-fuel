@@ -39,7 +39,7 @@ public class RefuelingFormTest extends BaseTest {
 
     @Test
     public void testFromModel_WithNull() {
-        RefuelingForm refuelingForm = RefuelingForm.fromModel(null);
+        RefuelingForm refuelingForm = new RefuelingForm().fromModel(null);
         assertNull(refuelingForm);
     }
 
@@ -52,7 +52,7 @@ public class RefuelingFormTest extends BaseTest {
                 .setLiters(liters)
                 .setCost(cost)
                 .setComment(comment);
-        final RefuelingForm form = RefuelingForm.fromModel(model);
+        final RefuelingForm form = new RefuelingForm().fromModel(model);
 
         assertEquals(id, form.getId());
         assertEquals(userId, form.getUserId());

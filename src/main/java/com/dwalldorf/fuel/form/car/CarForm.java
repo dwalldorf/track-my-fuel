@@ -1,8 +1,9 @@
 package com.dwalldorf.fuel.form.car;
 
-import java.io.Serializable;
+import com.dwalldorf.fuel.form.ThymeleafForm;
+import com.dwalldorf.fuel.model.Car;
 
-public class CarForm implements Serializable {
+public class CarForm implements ThymeleafForm<Car, CarForm> {
 
     private String id;
 
@@ -15,6 +16,16 @@ public class CarForm implements Serializable {
     private String year;
 
     private String licensePlate;
+
+    @Override
+    public Car toModel() {
+        return null;
+    }
+
+    @Override
+    public CarForm fromModel(Car model) {
+        return null;
+    }
 
     public String getId() {
         return id;

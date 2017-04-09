@@ -73,7 +73,7 @@ public class RefuelingController {
         userService.verifyOwner(refueling);
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
-        mav.addObject("refuelingForm", RefuelingForm.fromModel(refueling));
+        mav.addObject("refuelingForm", new RefuelingForm().fromModel(refueling));
         return mav;
     }
 
