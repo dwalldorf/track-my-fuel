@@ -37,6 +37,10 @@ public class RefuelingForm implements Serializable {
     }
 
     public static RefuelingForm fromModel(Refueling model) {
+        if (model == null) {
+            return null;
+        }
+
         return new RefuelingForm()
                 .setId(model.getId())
                 .setUserId(model.getUserId())
