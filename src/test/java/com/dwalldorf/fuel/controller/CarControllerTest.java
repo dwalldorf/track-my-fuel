@@ -11,8 +11,10 @@ import com.dwalldorf.fuel.form.car.CarForm;
 import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.service.CarService;
 import com.dwalldorf.fuel.service.UserService;
+import com.dwalldorf.fuel.util.RouteUtil;
 import java.util.Map;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 public class CarControllerTest extends BaseTest {
@@ -109,5 +111,48 @@ public class CarControllerTest extends BaseTest {
         final Object carForm = modelMap.get(expectedModelName);
         assertTrue(carForm instanceof CarForm);
         assertNotNull(carForm);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testSaveAction_ThrowsNotFound() {
+        final String id = "noSuchId";
+        when(mockCarService.findById(eq(id))).thenReturn(null);
+
+        CarForm refuelingForm = new CarForm().setId(id);
+        carController.saveAction(refuelingForm);
+    }
+
+    @Test
+    public void testSaveAction_VerifiesOwner() {
+        final String id = "123";
+        final Car mockPersistedCar = new Car().setId(id);
+        when(mockCarService.findById(eq(id))).thenReturn(mockPersistedCar);
+
+        carController.saveAction(new CarForm().fromModel(mockPersistedCar));
+
+        verify(mockUserService).verifyOwner(eq(mockPersistedCar));
+    }
+
+    @Test
+    public void testSaveAction_NewEntry_SetsUserId() {
+        final String mockUserId = "mockUserId";
+        when(mockUserService.getCurrentUserId()).thenReturn(mockUserId);
+
+        ArgumentCaptor<Car> carCaptor = ArgumentCaptor.forClass(Car.class);
+        carController.saveAction(new CarForm());
+
+        verify(mockCarService).save(carCaptor.capture());
+        final Car capturedCar = carCaptor.getValue();
+
+        assertNotNull(capturedCar.getUserId());
+        assertEquals(mockUserId, capturedCar.getUserId());
+    }
+
+    @Test
+    public void testSaveAction_Redirect() {
+        final String expectedRedirect = RouteUtil.redirectString("/cars");
+        final String actualRedirect = carController.saveAction(new CarForm());
+
+        assertEquals(expectedRedirect, actualRedirect);
     }
 }
