@@ -1,16 +1,20 @@
 package com.dwalldorf.fuel.controller;
 
+import com.dwalldorf.fuel.exception.NotFoundException;
 import com.dwalldorf.fuel.form.car.CarForm;
 import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.service.CarService;
 import com.dwalldorf.fuel.service.UserService;
+import com.dwalldorf.fuel.util.RouteUtil;
 import java.util.LinkedList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -20,8 +24,8 @@ public class CarController {
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
 
     private static final String VIEW_PREFIX = "/car/";
-    private static final String VIEW_LIST = VIEW_PREFIX + "/list";
-    private static final String VIEW_EDIT = VIEW_PREFIX + "/edit";
+    private static final String VIEW_LIST = VIEW_PREFIX + "list";
+    private static final String VIEW_EDIT = VIEW_PREFIX + "edit";
 
     private final CarService carService;
     private final UserService userService;
@@ -70,5 +74,23 @@ public class CarController {
         mav.addObject("carForm", new CarForm());
 
         return mav;
+    }
+
+    @PostMapping(ROUTE_PREFIX)
+    public String saveAction(@ModelAttribute @Valid CarForm carForm) {
+        Car car = carForm.toModel();
+
+        if (car.getId() != null) {
+            Car persistedCar = carService.findById(car.getId());
+            if (persistedCar == null) {
+                throw new NotFoundException();
+            }
+            userService.verifyOwner(persistedCar);
+        } else {
+            car.setUserId(userService.getCurrentUserId());
+        }
+
+        carService.save(car);
+        return RouteUtil.redirectString(ROUTE_PREFIX);
     }
 }
