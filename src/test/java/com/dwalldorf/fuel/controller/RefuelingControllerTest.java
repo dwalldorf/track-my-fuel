@@ -14,6 +14,7 @@ import com.dwalldorf.fuel.service.UserService;
 import com.dwalldorf.fuel.util.RouteUtil;
 import java.util.Map;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 public class RefuelingControllerTest extends BaseTest {
@@ -101,5 +102,48 @@ public class RefuelingControllerTest extends BaseTest {
         final Object refuelingForm = modelMap.get(expectedModelName);
         assertTrue(refuelingForm instanceof RefuelingForm);
         assertNotNull(refuelingForm);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testSaveAction_ThrowsNotFound() {
+        final String id = "noSuchId";
+        when(mockRefuelingService.findById(eq(id))).thenReturn(null);
+
+        RefuelingForm refuelingForm = new RefuelingForm().setId(id);
+        refuelingController.saveAction(refuelingForm);
+    }
+
+    @Test
+    public void testSaveAction_VerifiesOwner() {
+        final String id = "123";
+        final Refueling mockPersistedRefueling = new Refueling().setId(id);
+        when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
+
+        refuelingController.saveAction(RefuelingForm.fromModel(mockPersistedRefueling));
+
+        verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
+    }
+
+    @Test
+    public void testSaveAction_NewEntry_SetsUserId() {
+        final String mockUserId = "mockUserId";
+        when(mockUserService.getCurrentUserId()).thenReturn(mockUserId);
+
+        ArgumentCaptor<Refueling> refuelingCaptor = ArgumentCaptor.forClass(Refueling.class);
+        refuelingController.saveAction(new RefuelingForm());
+
+        verify(mockRefuelingService).save(refuelingCaptor.capture());
+        final Refueling capturedRefueling = refuelingCaptor.getValue();
+
+        assertNotNull(capturedRefueling.getUserId());
+        assertEquals(mockUserId, capturedRefueling.getUserId());
+    }
+
+    @Test
+    public void testSaveAction_Redirect() {
+        final String expectedRedirect = RouteUtil.redirectString("/refueling");
+        final String actualRedirect = refuelingController.saveAction(new RefuelingForm());
+
+        assertEquals(expectedRedirect, actualRedirect);
     }
 }
