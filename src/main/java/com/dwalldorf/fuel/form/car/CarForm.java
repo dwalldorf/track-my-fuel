@@ -19,7 +19,13 @@ public class CarForm implements ThymeleafForm<Car, CarForm> {
 
     @Override
     public Car toModel() {
-        return null;
+        return new Car()
+                .setId(getId())
+                .setUserId(getUserId())
+                .setManufacturer(getManufacturer())
+                .setModelName(getModelName())
+                .setYear(getYear())
+                .setLicensePlate(getLicensePlate());
     }
 
     @Override
