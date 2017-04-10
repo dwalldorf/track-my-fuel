@@ -27,4 +27,8 @@ public class RefuelingService {
     public Refueling findById(String id) {
         return refuelingRepository.findOne(id);
     }
+
+    public void delete(Refueling refueling) {
+        refuelingRepository.delete(refueling);
+    }
 }

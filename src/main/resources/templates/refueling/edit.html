@@ -12,13 +12,12 @@
                 <h2 th:if="${#strings.isEmpty(id)}">New Refueling</h2>
 
                 <input type="hidden"
-                       th:if="${!#strings.isEmpty(id)}"
                        name="id"
-                       th:value="${id}"/>
+                       th:if="${!#strings.isEmpty(id)}"
+                       th:field="*{id}"/>
                 <input type="hidden"
-                       th:if="${!#strings.isEmpty(userId)}"
                        name="userId"
-                       th:value="${userId}"/>
+                       th:field="*{userId}"/>
 
                 <div class="form-group">
                     <label for="kilometers" class="col-xs-2 control-label">Kilometers:</label>

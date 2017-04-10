@@ -119,7 +119,7 @@ public class RefuelingControllerTest extends BaseTest {
         final Refueling mockPersistedRefueling = new Refueling().setId(id);
         when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
 
-        refuelingController.saveAction(RefuelingForm.fromModel(mockPersistedRefueling));
+        refuelingController.saveAction(new RefuelingForm().fromModel(mockPersistedRefueling));
 
         verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
     }
@@ -143,6 +143,47 @@ public class RefuelingControllerTest extends BaseTest {
     public void testSaveAction_Redirect() {
         final String expectedRedirect = RouteUtil.redirectString("/refueling");
         final String actualRedirect = refuelingController.saveAction(new RefuelingForm());
+
+        assertEquals(expectedRedirect, actualRedirect);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testDeleteAction_ThrowsNotFound() {
+        final String id = "noSuchId";
+        when(mockRefuelingService.findById(eq(id))).thenReturn(null);
+
+        refuelingController.deleteAction(id);
+    }
+
+    @Test
+    public void testDeleteAction_VerifiesOwner() {
+        final String id = "noSuchId";
+        Refueling mockPersistedRefueling = new Refueling();
+        when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
+
+        refuelingController.deleteAction(id);
+
+        verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
+    }
+
+    @Test
+    public void testDeleteAction_Deletion() {
+        final String id = "noSuchId";
+        Refueling mockPersistedRefueling = new Refueling();
+        when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
+
+        refuelingController.deleteAction(id);
+
+        verify(mockRefuelingService).delete(eq(mockPersistedRefueling));
+    }
+
+    @Test
+    public void testDeleteAction_Redirect() {
+        final String id = "noSuchId";
+        when(mockRefuelingService.findById(eq(id))).thenReturn(new Refueling());
+
+        final String expectedRedirect = RouteUtil.redirectString("/refueling");
+        final String actualRedirect = refuelingController.deleteAction(id);
 
         assertEquals(expectedRedirect, actualRedirect);
     }

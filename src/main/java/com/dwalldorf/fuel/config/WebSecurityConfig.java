@@ -30,7 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * Configure access to parts of the application
      *
      * @param http HttpSecurity
-     * @throws Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -50,7 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * Use {@link AuthProviderConfig#authenticationProvider()} <code>AuthenticationProvider</code>.
      *
      * @param auth AuthenticationManagerBuilder
-     * @throws Exception
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

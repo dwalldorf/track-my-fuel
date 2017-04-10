@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class RefuelingController {
     private static final String ROUTE_PAGE_LIST = ROUTE_PREFIX + "/list";
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
     private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit";
+    private static final String ROUTE_ACTION_DELETE = ROUTE_PREFIX + "/{id}/delete";
 
     private static final String VIEW_PREFIX = "/refueling/";
     private static final String VIEW_LIST = VIEW_PREFIX + "list";
@@ -55,8 +57,8 @@ public class RefuelingController {
 
     @GetMapping(ROUTE_PAGE_ADD)
     public ModelAndView addPage() {
-        RefuelingForm refuelingForm = new RefuelingForm();
-        refuelingForm.setDate(new DateTime());
+        RefuelingForm refuelingForm = new RefuelingForm()
+                .setDate(new DateTime());
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
         mav.addObject("refuelingForm", refuelingForm);
@@ -73,7 +75,7 @@ public class RefuelingController {
         userService.verifyOwner(refueling);
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
-        mav.addObject("refuelingForm", RefuelingForm.fromModel(refueling));
+        mav.addObject("refuelingForm", new RefuelingForm().fromModel(refueling));
         return mav;
     }
 
@@ -92,6 +94,19 @@ public class RefuelingController {
         }
 
         refuelingService.save(refueling);
+        return RouteUtil.redirectString(ROUTE_PREFIX);
+    }
+
+    @DeleteMapping(ROUTE_ACTION_DELETE)
+    public String deleteAction(@PathVariable String id) {
+        Refueling refueling = refuelingService.findById(id);
+
+        if (refueling == null) {
+            throw new NotFoundException();
+        }
+        userService.verifyOwner(refueling);
+        refuelingService.delete(refueling);
+
         return RouteUtil.redirectString(ROUTE_PREFIX);
     }
 }

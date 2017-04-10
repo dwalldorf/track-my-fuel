@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(VersionController.BASE_URI)
+@RequestMapping
 public class VersionController {
 
-    static final String BASE_URI = "/version";
+    private static final String BASE_URI = "/version";
 
     private final ApplicationProperties applicationProperties;
 
@@ -19,7 +19,7 @@ public class VersionController {
         this.applicationProperties = applicationProperties;
     }
 
-    @GetMapping
+    @GetMapping(VersionController.BASE_URI)
     public String getVersion() {
         return applicationProperties.getVersion();
     }

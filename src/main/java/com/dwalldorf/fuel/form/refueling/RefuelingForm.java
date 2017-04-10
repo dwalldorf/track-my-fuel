@@ -1,12 +1,12 @@
 package com.dwalldorf.fuel.form.refueling;
 
+import com.dwalldorf.fuel.form.ThymeleafForm;
 import com.dwalldorf.fuel.model.Refueling;
-import java.io.Serializable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class RefuelingForm implements Serializable {
+public class RefuelingForm implements ThymeleafForm<Refueling, RefuelingForm> {
 
     private final static DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("YYYY-MM-dd hh:mm");
 
@@ -25,6 +25,7 @@ public class RefuelingForm implements Serializable {
 
     private String comment;
 
+    @Override
     public Refueling toModel() {
         return new Refueling()
                 .setId(getId())
@@ -36,7 +37,8 @@ public class RefuelingForm implements Serializable {
                 .setComment(getComment());
     }
 
-    public static RefuelingForm fromModel(Refueling model) {
+    @Override
+    public RefuelingForm fromModel(Refueling model) {
         if (model == null) {
             return null;
         }
