@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(VersionController.BASE_URI)
 public class VersionController {
 
-    static final String BASE_URI = "/version";
+    private static final String BASE_URI = "/version";
 
     private final ApplicationProperties applicationProperties;
 

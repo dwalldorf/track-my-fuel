@@ -32,7 +32,7 @@ public class CarController {
     private final CarService carService;
     private final UserService userService;
 
-    private static List<Integer> yearValues;
+    private static final List<Integer> yearValues;
 
     static {
         final int oldestYearPossible = 1880;
