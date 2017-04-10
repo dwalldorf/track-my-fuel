@@ -146,4 +146,45 @@ public class RefuelingControllerTest extends BaseTest {
 
         assertEquals(expectedRedirect, actualRedirect);
     }
+
+    @Test(expected = NotFoundException.class)
+    public void testDeleteAction_ThrowsNotFound() {
+        final String id = "noSuchId";
+        when(mockRefuelingService.findById(eq(id))).thenReturn(null);
+
+        refuelingController.deleteAction(id);
+    }
+
+    @Test
+    public void testDeleteAction_VerifiesOwner() {
+        final String id = "noSuchId";
+        Refueling mockPersistedRefueling = new Refueling();
+        when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
+
+        refuelingController.deleteAction(id);
+
+        verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
+    }
+
+    @Test
+    public void testDeleteAction_Deletion() {
+        final String id = "noSuchId";
+        Refueling mockPersistedRefueling = new Refueling();
+        when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
+
+        refuelingController.deleteAction(id);
+
+        verify(mockRefuelingService).delete(eq(mockPersistedRefueling));
+    }
+
+    @Test
+    public void testDeleteAction_Redirect() {
+        final String id = "noSuchId";
+        when(mockRefuelingService.findById(eq(id))).thenReturn(new Refueling());
+
+        final String expectedRedirect = RouteUtil.redirectString("/refueling");
+        final String actualRedirect = refuelingController.deleteAction(id);
+
+        assertEquals(expectedRedirect, actualRedirect);
+    }
 }
