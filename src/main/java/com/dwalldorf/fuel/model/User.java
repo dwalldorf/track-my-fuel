@@ -1,48 +1,62 @@
 package com.dwalldorf.fuel.model;
 
 import java.io.Serializable;
-import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-import org.mongodb.morphia.annotations.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
-@Document(collection = "users")
+@Entity
+@Table(name = "users", indexes = @Index(columnList = "username, email"))
 public class User implements Serializable {
 
     @Id
-    private String id;
+    @GeneratedValue
+    @Column(name = "user_id")
+    private Long id;
 
-    @NotEmpty
-    @Size(min = 3, max = 40)
-    @Indexed(unique = true)
+    @Column(nullable = false)
     private String username;
 
-    @Email
-    @NotEmpty
+    @Column(nullable = false)
     private String email;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String password;
 
-    @NotEmpty
+    @Column(nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private DateTime registration;
 
+    @Column
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private DateTime firstLogin;
 
+    @Column
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private DateTime lastLogin;
 
+    @Column(nullable = false)
     private Boolean confirmedEmail = false;
 
-    private String defaultCustomerId;
+    @OneToMany(mappedBy = "user")
+    private List<Car> cars;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public User setId(String id) {
+    public User setId(Long id) {
         this.id = id;
         return this;
     }
@@ -107,15 +121,6 @@ public class User implements Serializable {
 
     public User setConfirmedEmail(Boolean confirmedEmail) {
         this.confirmedEmail = confirmedEmail;
-        return this;
-    }
-
-    public String getDefaultCustomerId() {
-        return defaultCustomerId;
-    }
-
-    public User setDefaultCustomerId(String defaultCustomerId) {
-        this.defaultCustomerId = defaultCustomerId;
         return this;
     }
 }

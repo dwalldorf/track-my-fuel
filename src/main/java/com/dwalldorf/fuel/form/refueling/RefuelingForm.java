@@ -1,18 +1,19 @@
 package com.dwalldorf.fuel.form.refueling;
 
-import com.dwalldorf.fuel.form.ThymeleafForm;
-import com.dwalldorf.fuel.model.Refueling;
+import java.io.Serializable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class RefuelingForm implements ThymeleafForm<Refueling, RefuelingForm> {
+public class RefuelingForm implements Serializable {
 
     private final static DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("YYYY-MM-dd hh:mm");
 
-    private String id;
+    private Long id;
 
-    private String userId;
+    private Long userId;
+
+    private Long carId;
 
     private Long kilometers;
 
@@ -25,48 +26,30 @@ public class RefuelingForm implements ThymeleafForm<Refueling, RefuelingForm> {
 
     private String comment;
 
-    @Override
-    public Refueling toModel() {
-        return new Refueling()
-                .setId(getId())
-                .setUserId(getUserId())
-                .setKilometers(getKilometers())
-                .setLiters(getLiters())
-                .setCost(getCost())
-                .setDate(getDate())
-                .setComment(getComment());
-    }
-
-    @Override
-    public RefuelingForm fromModel(Refueling model) {
-        if (model == null) {
-            return null;
-        }
-
-        return new RefuelingForm()
-                .setId(model.getId())
-                .setUserId(model.getUserId())
-                .setKilometers(model.getKilometers())
-                .setLiters(model.getLiters())
-                .setCost(model.getCost())
-                .setComment(model.getComment());
-    }
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public RefuelingForm setId(String id) {
+    public RefuelingForm setId(Long id) {
         this.id = id;
         return this;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public RefuelingForm setUserId(String userId) {
+    public RefuelingForm setUserId(Long userId) {
         this.userId = userId;
+        return this;
+    }
+
+    public Long getCarId() {
+        return carId;
+    }
+
+    public RefuelingForm setCarId(Long carId) {
+        this.carId = carId;
         return this;
     }
 
@@ -101,6 +84,7 @@ public class RefuelingForm implements ThymeleafForm<Refueling, RefuelingForm> {
         return date;
     }
 
+    @SuppressWarnings("unused")
     public String getDateString() {
         if (date == null) {
             return null;
@@ -120,5 +104,14 @@ public class RefuelingForm implements ThymeleafForm<Refueling, RefuelingForm> {
     public RefuelingForm setComment(String comment) {
         this.comment = comment;
         return this;
+    }
+
+    @SuppressWarnings("unused")
+    public String getCostPerKilometer() {
+        if (cost == null || liters == null) {
+            return "";
+        }
+
+        return String.format("%.4g%n€", cost / liters);
     }
 }

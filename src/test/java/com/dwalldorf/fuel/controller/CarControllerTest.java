@@ -9,6 +9,7 @@ import com.dwalldorf.fuel.BaseTest;
 import com.dwalldorf.fuel.exception.NotFoundException;
 import com.dwalldorf.fuel.form.car.CarForm;
 import com.dwalldorf.fuel.model.Car;
+import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.service.CarService;
 import com.dwalldorf.fuel.service.UserService;
 import com.dwalldorf.fuel.util.RouteUtil;
@@ -18,6 +19,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 public class CarControllerTest extends BaseTest {
+
+    private static final Long userId = 2184L;
+    private static final Long id = 73123L;
+
+    private static final User mockUser = new User().setId(userId);
+    private static final Car mockCar = new Car().setId(id).setUser(mockUser);
+    private static final CarForm mockCarForm = new CarForm().setId(id).setUserId(userId);
 
     @Mock
     private CarService mockCarService;
@@ -70,27 +78,23 @@ public class CarControllerTest extends BaseTest {
 
     @Test(expected = NotFoundException.class)
     public void testEditPage_ThrowsNotFound() {
-        final String id = "noSuchId";
         when(mockCarService.findById(id)).thenReturn(null);
-
         carController.editPage(id);
     }
 
     @Test
     public void testEditPage_VerifiesOwner() {
-        final String id = "someId";
-        final Car mockPersistedCar = new Car().setId(id);
-        when(mockCarService.findById(eq(id))).thenReturn(mockPersistedCar);
+        when(mockCarService.findById(eq(id))).thenReturn(mockCar);
 
         carController.editPage(id);
 
-        verify(mockUserService).verifyOwner(eq(mockPersistedCar));
+        verify(mockUserService).verifyOwner(eq(mockCar));
     }
 
     @Test
     public void testEditPage_ViewName() {
-        final String id = "someId";
-        when(mockCarService.findById(eq(id))).thenReturn(new Car().setId(id));
+        when(mockCarService.findById(eq(id))).thenReturn(new Car().setId(id).setUser(mockUser));
+        when(mockUserService.findById(eq(mockUser.getId()))).thenReturn(mockUser);
         final String expectedViewName = "/car/edit";
 
         final String actualViewName = carController.editPage(id).getViewName();
@@ -100,8 +104,8 @@ public class CarControllerTest extends BaseTest {
 
     @Test
     public void testEditPage_CarFormModel() {
-        final String id = "123";
-        when(mockCarService.findById(eq(id))).thenReturn(new Car());
+        when(mockCarService.findById(eq(id))).thenReturn(mockCar);
+        when(mockCarService.fromModel(mockCar)).thenReturn(mockCarForm);
 
         final String expectedModelName = "carForm";
         final Map<String, Object> modelMap = carController.editPage(id).getModel();
@@ -115,7 +119,7 @@ public class CarControllerTest extends BaseTest {
 
     @Test(expected = NotFoundException.class)
     public void testSaveAction_ThrowsNotFound() {
-        final String id = "noSuchId";
+        when(mockCarService.toModel(any(CarForm.class))).thenReturn(mockCar);
         when(mockCarService.findById(eq(id))).thenReturn(null);
 
         CarForm refuelingForm = new CarForm().setId(id);
@@ -124,19 +128,20 @@ public class CarControllerTest extends BaseTest {
 
     @Test
     public void testSaveAction_VerifiesOwner() {
-        final String id = "123";
-        final Car mockPersistedCar = new Car().setId(id);
-        when(mockCarService.findById(eq(id))).thenReturn(mockPersistedCar);
+        when(mockCarService.toModel(any(CarForm.class))).thenReturn(mockCar);
+        when(mockCarService.findById(eq(id))).thenReturn(mockCar);
 
-        carController.saveAction(new CarForm().fromModel(mockPersistedCar));
+        carController.saveAction(mockCarForm);
 
-        verify(mockUserService).verifyOwner(eq(mockPersistedCar));
+        verify(mockUserService).verifyOwner(eq(mockCar));
     }
 
     @Test
     public void testSaveAction_NewEntry_SetsUserId() {
-        final String mockUserId = "mockUserId";
-        when(mockUserService.getCurrentUserId()).thenReturn(mockUserId);
+        when(mockCarService.toModel(any(CarForm.class))).thenReturn(new Car());
+        when(mockUserService.getCurrentUserId()).thenReturn(userId);
+        when(mockUserService.findById(userId)).thenReturn(mockUser);
+        when(mockUserService.getCurrentUser()).thenReturn(mockUser);
 
         ArgumentCaptor<Car> carCaptor = ArgumentCaptor.forClass(Car.class);
         carController.saveAction(new CarForm());
@@ -144,12 +149,15 @@ public class CarControllerTest extends BaseTest {
         verify(mockCarService).save(carCaptor.capture());
         final Car capturedCar = carCaptor.getValue();
 
-        assertNotNull(capturedCar.getUserId());
-        assertEquals(mockUserId, capturedCar.getUserId());
+        assertNotNull(capturedCar.getUser());
+        assertEquals(userId, capturedCar.getUser().getId());
     }
 
     @Test
     public void testSaveAction_Redirect() {
+        when(mockCarService.toModel(any(CarForm.class))).thenReturn(mockCar);
+        when(mockCarService.findById(eq(id))).thenReturn(mockCar);
+
         final String expectedRedirect = RouteUtil.redirectString("/cars");
         final String actualRedirect = carController.saveAction(new CarForm());
 

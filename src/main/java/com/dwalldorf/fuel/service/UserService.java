@@ -4,6 +4,7 @@ import com.dwalldorf.fuel.config.SecurityUser;
 import com.dwalldorf.fuel.exception.InvalidFormInputException;
 import com.dwalldorf.fuel.exception.ResourceConflictException;
 import com.dwalldorf.fuel.form.user.RegisterForm;
+import com.dwalldorf.fuel.model.HasUser;
 import com.dwalldorf.fuel.model.HasUserId;
 import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.repository.UserRepository;
@@ -84,7 +85,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findOne(getCurrentUserId());
     }
 
-    public String getCurrentUserId() {
+    public Long getCurrentUserId() {
         return sessionService.getCurrentUserId();
     }
 
@@ -108,5 +109,32 @@ public class UserService implements UserDetailsService {
             );
             throw new ResourceConflictException(message);
         }
+    }
+
+
+    /**
+     * Verifies the object to modify belongs to the current user.
+     *
+     * @param objectToModify object to perform check on
+     * @throws ResourceConflictException in case the object belongs to another user
+     */
+    public void verifyOwner(HasUser objectToModify) throws ResourceConflictException {
+        if (objectToModify.getUser() == null) {
+            return;
+        }
+        if (!objectToModify.getUser().getId().equals(getCurrentUserId())) {
+            String message = String.format(
+                    "User %s tried to modify %s of type %s but belongs to %s",
+                    getCurrentUserId(),
+                    objectToModify.getId(),
+                    objectToModify.getObjectType(),
+                    objectToModify.getUser().getId()
+            );
+            throw new ResourceConflictException(message);
+        }
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findOne(userId);
     }
 }

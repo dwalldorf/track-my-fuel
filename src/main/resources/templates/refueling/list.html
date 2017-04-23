@@ -20,19 +20,27 @@
                 <thead>
                 <th class="col-xs-4 col-sm-2 col-lg-1">Actions</th>
                 <th class="col-xs-4 col-sm-2 col-lg-1">Kilometers</th>
+                <th class="col-xs-4 col-sm-2 col-lg-1">Amount</th>
+                <th class="col-xs-4 col-sm-2 col-lg-1">Cost</th>
                 </thead>
                 <tbody>
-                <tr th:each="entry:${refuelings}">
+                <tr th:each="refueling:${refuelings}">
                     <td>
-                        <a th:href="@{/refueling/{id}/edit(id=${entry.id})}" class="btn btn-default btn-sm">
+                        <a th:href="@{/refueling/{id}/edit(id=${refueling.id})}" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a th:href="@{/refueling/{id}/delete(id=${entry.id})}" class="btn btn-default btn-sm">
+                        <a th:href="@{/refueling/{id}/delete(id=${refueling.id})}" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
                     </td>
                     <td>
-                        <span th:text="*{entry.kilometers}"></span>
+                        <span th:text="*{refueling.kilometers}"></span>
+                    </td>
+                    <td>
+                        <span th:text="*{refueling.liters}"></span>l
+                    </td>
+                    <td>
+                        <span th:text="*{refueling.cost}"></span>&euro;
                     </td>
                 </tr>
                 </tbody>

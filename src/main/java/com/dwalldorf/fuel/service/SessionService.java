@@ -11,7 +11,7 @@ public class SessionService {
         return (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public String getCurrentUserId() {
+    public Long getCurrentUserId() {
         return getCurrentUser().getId();
     }
 }

@@ -20,6 +20,20 @@
                        th:field="*{userId}"/>
 
                 <div class="form-group">
+                    <label for="car" class="col-xs-2 control-label">Car:</label>
+                    <div class="col-xs-10">
+                        <select th:field="*{carId}"
+                                name="car"
+                                id="car"
+                                class="form-control">
+                            <option th:each="car : ${cars}"
+                                    th:value="${car.id}"
+                                    th:text="${T(com.dwalldorf.fuel.format.CarFormatter).carDisplayName(car)}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="kilometers" class="col-xs-2 control-label">Kilometers:</label>
                     <div class="col-xs-10">
                         <input type="number"
@@ -31,13 +45,37 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="cost" class="col-xs-2 control-label">EUR/l:</label>
+                    <label for="liters" class="col-xs-2 control-label">Liters:</label>
+                    <div class="col-xs-10">
+                        <input type="number"
+                               step="0.001"
+                               id="liters"
+                               name="liters"
+                               th:field="*{liters}"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cost" class="col-xs-2 control-label">Expense:</label>
                     <div class="col-xs-10">
                         <input type="number"
                                step="0.001"
                                id="cost"
                                name="cost"
                                th:field="*{cost}"
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cost-per-km" class="col-xs-2 control-label">EUR/l:</label>
+                    <div class="col-xs-10">
+                        <input type="text"
+                               id="cost-per-km"
+                               name="cost-per-km"
+                               th:field="*{costPerKilometer}"
+                               disabled="disabled"
                                class="form-control"/>
                     </div>
                 </div>

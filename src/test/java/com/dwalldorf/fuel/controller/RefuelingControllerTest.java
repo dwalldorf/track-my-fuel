@@ -9,6 +9,9 @@ import com.dwalldorf.fuel.BaseTest;
 import com.dwalldorf.fuel.exception.NotFoundException;
 import com.dwalldorf.fuel.form.refueling.RefuelingForm;
 import com.dwalldorf.fuel.model.Refueling;
+import com.dwalldorf.fuel.model.User;
+import com.dwalldorf.fuel.service.CarService;
+import com.dwalldorf.fuel.service.ExpenseService;
 import com.dwalldorf.fuel.service.RefuelingService;
 import com.dwalldorf.fuel.service.UserService;
 import com.dwalldorf.fuel.util.RouteUtil;
@@ -19,8 +22,19 @@ import org.mockito.Mock;
 
 public class RefuelingControllerTest extends BaseTest {
 
+    private static final Long id = 123L;
+    private static final Long userId = 321L;
+
+    private static final User mockUser = new User().setId(userId);
+
     @Mock
     private RefuelingService mockRefuelingService;
+
+    @Mock
+    private CarService mockCarService;
+
+    @Mock
+    private ExpenseService mockExpenseService;
 
     @Mock
     private UserService mockUserService;
@@ -29,7 +43,7 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Override
     protected void setUp() {
-        this.refuelingController = new RefuelingController(mockRefuelingService, mockUserService);
+        this.refuelingController = new RefuelingController(mockRefuelingService, mockCarService, mockExpenseService, mockUserService);
     }
 
     @Test
@@ -70,8 +84,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test(expected = NotFoundException.class)
     public void testEditPage_ThrowsNotFound() {
-        final String id = "noSuchId";
-
         when(mockRefuelingService.findById(eq(id))).thenReturn(null);
         refuelingController.editPage(id);
 
@@ -80,7 +92,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testEditPage_ViewName() {
-        final String id = "123";
         when(mockRefuelingService.findById(eq(id))).thenReturn(new Refueling());
 
         final String expectedViewName = "/refueling/edit";
@@ -91,22 +102,18 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testEditPage_RefuelingFormModel() {
-        final String id = "123";
-        when(mockRefuelingService.findById(eq(id))).thenReturn(new Refueling());
+        Refueling refueling = new Refueling().setId(id);
+        when(mockRefuelingService.findById(eq(id))).thenReturn(refueling);
 
         final String expectedModelName = "refuelingForm";
         final Map<String, Object> modelMap = refuelingController.editPage(id).getModel();
 
         assertTrue(modelMap.containsKey(expectedModelName));
-
-        final Object refuelingForm = modelMap.get(expectedModelName);
-        assertTrue(refuelingForm instanceof RefuelingForm);
-        assertNotNull(refuelingForm);
+        verify(mockRefuelingService).fromModel(eq(refueling));
     }
 
     @Test(expected = NotFoundException.class)
     public void testSaveAction_ThrowsNotFound() {
-        final String id = "noSuchId";
         when(mockRefuelingService.findById(eq(id))).thenReturn(null);
 
         RefuelingForm refuelingForm = new RefuelingForm().setId(id);
@@ -115,32 +122,35 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testSaveAction_VerifiesOwner() {
-        final String id = "123";
         final Refueling mockPersistedRefueling = new Refueling().setId(id);
+        final RefuelingForm mockPersistedRefuelingForm = new RefuelingForm().setId(id);
         when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
 
-        refuelingController.saveAction(new RefuelingForm().fromModel(mockPersistedRefueling));
+        refuelingController.saveAction(mockPersistedRefuelingForm);
 
         verify(mockUserService).verifyOwner(eq(mockPersistedRefueling));
     }
 
     @Test
     public void testSaveAction_NewEntry_SetsUserId() {
-        final String mockUserId = "mockUserId";
-        when(mockUserService.getCurrentUserId()).thenReturn(mockUserId);
+        RefuelingForm refuelingForm = new RefuelingForm();
+
+        when(mockUserService.getCurrentUser()).thenReturn(mockUser);
+        when(mockRefuelingService.toModel(eq(refuelingForm))).thenReturn(new Refueling());
 
         ArgumentCaptor<Refueling> refuelingCaptor = ArgumentCaptor.forClass(Refueling.class);
-        refuelingController.saveAction(new RefuelingForm());
+        refuelingController.saveAction(refuelingForm);
 
         verify(mockRefuelingService).save(refuelingCaptor.capture());
         final Refueling capturedRefueling = refuelingCaptor.getValue();
 
-        assertNotNull(capturedRefueling.getUserId());
-        assertEquals(mockUserId, capturedRefueling.getUserId());
+        assertNotNull(capturedRefueling.getUser());
+        assertEquals(userId, capturedRefueling.getUser().getId());
     }
 
     @Test
     public void testSaveAction_Redirect() {
+        when(mockRefuelingService.toModel(any(RefuelingForm.class))).thenReturn(new Refueling());
         final String expectedRedirect = RouteUtil.redirectString("/refueling");
         final String actualRedirect = refuelingController.saveAction(new RefuelingForm());
 
@@ -149,7 +159,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test(expected = NotFoundException.class)
     public void testDeleteAction_ThrowsNotFound() {
-        final String id = "noSuchId";
         when(mockRefuelingService.findById(eq(id))).thenReturn(null);
 
         refuelingController.deleteAction(id);
@@ -157,7 +166,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testDeleteAction_VerifiesOwner() {
-        final String id = "noSuchId";
         Refueling mockPersistedRefueling = new Refueling();
         when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
 
@@ -168,7 +176,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testDeleteAction_Deletion() {
-        final String id = "noSuchId";
         Refueling mockPersistedRefueling = new Refueling();
         when(mockRefuelingService.findById(eq(id))).thenReturn(mockPersistedRefueling);
 
@@ -179,7 +186,6 @@ public class RefuelingControllerTest extends BaseTest {
 
     @Test
     public void testDeleteAction_Redirect() {
-        final String id = "noSuchId";
         when(mockRefuelingService.findById(eq(id))).thenReturn(new Refueling());
 
         final String expectedRedirect = RouteUtil.redirectString("/refueling");

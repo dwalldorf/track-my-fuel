@@ -2,7 +2,10 @@ package com.dwalldorf.fuel.controller;
 
 import com.dwalldorf.fuel.exception.NotFoundException;
 import com.dwalldorf.fuel.form.refueling.RefuelingForm;
+import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.model.Refueling;
+import com.dwalldorf.fuel.service.CarService;
+import com.dwalldorf.fuel.service.ExpenseService;
 import com.dwalldorf.fuel.service.RefuelingService;
 import com.dwalldorf.fuel.service.UserService;
 import com.dwalldorf.fuel.util.RouteUtil;
@@ -32,17 +35,30 @@ public class RefuelingController {
     private static final String VIEW_ADD = VIEW_PREFIX + "edit";
 
     private final RefuelingService refuelingService;
+    private final CarService carService;
+    private final ExpenseService expenseService;
     private final UserService userService;
 
     @Inject
-    public RefuelingController(RefuelingService refuelingService, UserService userService) {
+    public RefuelingController(RefuelingService refuelingService,
+                               CarService carService,
+                               ExpenseService expenseService,
+                               UserService userService) {
         this.refuelingService = refuelingService;
+        this.carService = carService;
+        this.expenseService = expenseService;
         this.userService = userService;
     }
 
     @ModelAttribute("refuelings")
     public List<Refueling> refuelings() {
-        return refuelingService.findAllByUser(userService.getCurrentUserId());
+        List<Refueling> allByUser = refuelingService.findAllByUser(userService.getCurrentUser());
+        return allByUser;
+    }
+
+    @ModelAttribute("cars")
+    public List<Car> cars() {
+        return carService.findByUser(userService.getCurrentUser());
     }
 
     @GetMapping(ROUTE_PREFIX)
@@ -66,7 +82,7 @@ public class RefuelingController {
     }
 
     @GetMapping(ROUTE_PAGE_EDIT)
-    public ModelAndView editPage(@PathVariable String id) {
+    public ModelAndView editPage(@PathVariable Long id) {
         Refueling refueling = refuelingService.findById(id);
         if (refueling == null) {
             throw new NotFoundException();
@@ -75,13 +91,13 @@ public class RefuelingController {
         userService.verifyOwner(refueling);
 
         ModelAndView mav = new ModelAndView(VIEW_ADD);
-        mav.addObject("refuelingForm", new RefuelingForm().fromModel(refueling));
+        mav.addObject("refuelingForm", refuelingService.fromModel(refueling));
         return mav;
     }
 
     @PostMapping(ROUTE_PREFIX)
     public String saveAction(@ModelAttribute @Valid RefuelingForm refuelingForm) {
-        Refueling refueling = refuelingForm.toModel();
+        Refueling refueling = refuelingService.toModel(refuelingForm);
 
         if (refuelingForm.getId() != null) {
             Refueling persistedRefueling = refuelingService.findById(refuelingForm.getId());
@@ -90,7 +106,7 @@ public class RefuelingController {
             }
             userService.verifyOwner(persistedRefueling);
         } else {
-            refueling.setUserId(userService.getCurrentUserId());
+            refueling.setUser(userService.getCurrentUser());
         }
 
         refuelingService.save(refueling);
@@ -98,7 +114,7 @@ public class RefuelingController {
     }
 
     @DeleteMapping(ROUTE_ACTION_DELETE)
-    public String deleteAction(@PathVariable String id) {
+    public String deleteAction(@PathVariable Long id) {
         Refueling refueling = refuelingService.findById(id);
 
         if (refueling == null) {

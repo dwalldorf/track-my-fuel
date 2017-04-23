@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 import com.dwalldorf.fuel.BaseTest;
 import com.dwalldorf.fuel.exception.ResourceConflictException;
 import com.dwalldorf.fuel.form.user.RegisterForm;
-import com.dwalldorf.fuel.model.HasUserId;
+import com.dwalldorf.fuel.model.HasUser;
 import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.repository.UserRepository;
 import org.junit.Test;
@@ -86,11 +86,11 @@ public class UserServiceTest extends BaseTest {
 
     @Test(expected = ResourceConflictException.class)
     public void testVerifyOwner_ThrowsResourceConflictException() {
-        final String currentUserId = "123";
-        final String objectUserId = "321";
+        final Long currentUserId = 123L;
+        final Long objectUserId = 321L;
 
-        HasUserId mockObject = mock(HasUserId.class);
-        when(mockObject.getUserId()).thenReturn(objectUserId);
+        HasUser mockObject = mock(HasUser.class);
+        when(mockObject.getUser()).thenReturn(new User().setId(objectUserId));
         when(mockSessionService.getCurrentUserId()).thenReturn(currentUserId);
 
         userService.verifyOwner(mockObject);
@@ -98,11 +98,11 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void testVerifyOwner() {
-        final String currentUserId = "123";
-        final String objectUserId = currentUserId;
+        final Long currentUserId = 123L;
+        final Long objectUserId = currentUserId;
 
-        HasUserId mockObject = mock(HasUserId.class);
-        when(mockObject.getUserId()).thenReturn(objectUserId);
+        HasUser mockObject = mock(HasUser.class);
+        when(mockObject.getUser()).thenReturn(new User().setId(objectUserId));
         when(mockSessionService.getCurrentUserId()).thenReturn(currentUserId);
 
         userService.verifyOwner(mockObject);

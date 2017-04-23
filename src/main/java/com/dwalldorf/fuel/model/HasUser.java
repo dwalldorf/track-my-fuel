@@ -2,9 +2,9 @@ package com.dwalldorf.fuel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public interface HasUserId extends HasId {
+public interface HasUser extends HasId {
 
-    Long getUserId();
+    User getUser();
 
     @JsonIgnore
     String getObjectType();

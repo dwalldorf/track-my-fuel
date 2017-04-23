@@ -1,12 +1,17 @@
 version: '2'
 
 services:
-  mongo:
-    image: mongo:latest
+  mysql:
+    image: mysql:latest
     ports:
-      - 27017:27017
+      - 3306:3306
     volumes:
-      - mongo-data:/data/db
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: trackmyfuel
+      MYSQL_USER: track
+      MYSQL_PASSWORD: pass
 
 volumes:
-  mongo-data: {}
+  mysql-data: {}

@@ -23,9 +23,11 @@ public class CarController {
 
     private static final String ROUTE_PREFIX = "/cars";
     private static final String ROUTE_PAGE_ADD = ROUTE_PREFIX + "/add";
+    private static final String ROUTE_PAGE_DETAILS = ROUTE_PREFIX + "/{id}";
     private static final String ROUTE_PAGE_EDIT = ROUTE_PREFIX + "/{id}/edit";
 
     private static final String VIEW_PREFIX = "/car/";
+    private static final String VIEW_DETAILS = VIEW_PREFIX + "details";
     private static final String VIEW_LIST = VIEW_PREFIX + "list";
     private static final String VIEW_EDIT = VIEW_PREFIX + "edit";
 
@@ -52,7 +54,7 @@ public class CarController {
 
     @ModelAttribute("cars")
     public List<Car> getCars() {
-        return carService.findByUserId(userService.getCurrentUserId());
+        return carService.findByUser(userService.getCurrentUser());
     }
 
     @ModelAttribute("yearValues")
@@ -65,6 +67,18 @@ public class CarController {
         return listPage();
     }
 
+    @GetMapping(ROUTE_PAGE_DETAILS)
+    public ModelAndView detailPage(@PathVariable Long id) {
+        Car car = carService.findById(id);
+        if (car == null) {
+            throw new NotFoundException();
+        }
+
+        ModelAndView mav = new ModelAndView(VIEW_DETAILS);
+        mav.addObject("car", car);
+
+        return mav;
+    }
 
     public String listPage() {
         return VIEW_LIST;
@@ -79,7 +93,7 @@ public class CarController {
     }
 
     @GetMapping(ROUTE_PAGE_EDIT)
-    public ModelAndView editPage(@PathVariable String id) {
+    public ModelAndView editPage(@PathVariable Long id) {
         Car car = carService.findById(id);
         if (car == null) {
             throw new NotFoundException();
@@ -87,13 +101,13 @@ public class CarController {
         userService.verifyOwner(car);
 
         ModelAndView mav = new ModelAndView(VIEW_EDIT);
-        mav.addObject("carForm", new CarForm().fromModel(car));
+        mav.addObject("carForm", carService.fromModel(car));
         return mav;
     }
 
     @PostMapping(ROUTE_PREFIX)
     public String saveAction(@ModelAttribute @Valid CarForm carForm) {
-        Car car = carForm.toModel();
+        Car car = carService.toModel(carForm);
 
         if (car.getId() != null) {
             Car persistedCar = carService.findById(car.getId());
@@ -102,7 +116,7 @@ public class CarController {
             }
             userService.verifyOwner(persistedCar);
         } else {
-            car.setUserId(userService.getCurrentUserId());
+            car.setUser(userService.getCurrentUser());
         }
 
         carService.save(car);

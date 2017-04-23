@@ -74,8 +74,7 @@ public class UserController {
 
         User user = userService.getCurrentUser();
         user.setUsername(userForm.getUsername())
-            .setEmail(userForm.getEmail())
-            .setDefaultCustomerId(user.getDefaultCustomerId());
+            .setEmail(userForm.getEmail());
 
         userService.save(user);
 

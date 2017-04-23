@@ -19,7 +19,7 @@
             <table th:unless="${#lists.isEmpty(cars)}" class="table table-striped table-hover">
                 <thead>
                 <th class="col-xs-4 col-lg-1">Actions</th>
-                <th class="col-xs-4 col-lg-11">Name</th>
+                <th class="col-xs-8 col-lg-11">Name</th>
                 </thead>
                 <tbody>
                 <tr th:each="car:${cars}">
@@ -32,8 +32,9 @@
                         </a>
                     </td>
                     <td>
-                        <span th:text="*{car.manufacturer}"></span>
-                        <span th:text="*{car.modelName}"></span>
+                        <a th:href="@{/cars/{id}(id=${car.id})}">
+                            <span th:text="${T(com.dwalldorf.fuel.format.CarFormatter).carDisplayName(car)}"></span>
+                        </a>
                     </td>
                 </tr>
                 </tbody>

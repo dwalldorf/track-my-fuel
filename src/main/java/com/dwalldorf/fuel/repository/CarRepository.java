@@ -1,10 +1,11 @@
 package com.dwalldorf.fuel.repository;
 
 import com.dwalldorf.fuel.model.Car;
+import com.dwalldorf.fuel.model.User;
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface CarRepository extends MongoRepository<Car, String> {
+public interface CarRepository extends CrudRepository<Car, Long> {
 
-    List<Car> findByUserId(String userId);
+    List<Car> findByUser(User user);
 }

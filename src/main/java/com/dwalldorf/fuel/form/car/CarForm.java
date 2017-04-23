@@ -1,13 +1,13 @@
 package com.dwalldorf.fuel.form.car;
 
-import com.dwalldorf.fuel.form.ThymeleafForm;
-import com.dwalldorf.fuel.model.Car;
+import java.io.Serializable;
+import javax.inject.Inject;
 
-public class CarForm implements ThymeleafForm<Car, CarForm> {
+public class CarForm implements Serializable {
 
-    private String id;
+    private Long id;
 
-    private String userId;
+    private Long userId;
 
     private String manufacturer;
 
@@ -17,46 +17,24 @@ public class CarForm implements ThymeleafForm<Car, CarForm> {
 
     private String licensePlate;
 
-    @Override
-    public Car toModel() {
-        return new Car()
-                .setId(getId())
-                .setUserId(getUserId())
-                .setManufacturer(getManufacturer())
-                .setModelName(getModelName())
-                .setYear(getYear())
-                .setLicensePlate(getLicensePlate());
+    @Inject
+    public CarForm() {
     }
 
-    @Override
-    public CarForm fromModel(Car model) {
-        if (model == null) {
-            return null;
-        }
-
-        return new CarForm()
-                .setId(model.getId())
-                .setUserId(model.getUserId())
-                .setManufacturer(model.getManufacturer())
-                .setModelName(model.getModelName())
-                .setYear(model.getYear())
-                .setLicensePlate(model.getLicensePlate());
-    }
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public CarForm setId(String id) {
+    public CarForm setId(Long id) {
         this.id = id;
         return this;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public CarForm setUserId(String userId) {
+    public CarForm setUserId(Long userId) {
         this.userId = userId;
         return this;
     }

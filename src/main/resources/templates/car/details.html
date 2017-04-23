@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout::html-head('Cars')">
+</head>
+<body>
+<header th:replace="layout::site-header"></header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>
+                <span th:text="${T(com.dwalldorf.fuel.format.CarFormatter).carDisplayName(car)}"></span>
+            </h1>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="layout::site-footer"></footer>
+</body>
+</html>

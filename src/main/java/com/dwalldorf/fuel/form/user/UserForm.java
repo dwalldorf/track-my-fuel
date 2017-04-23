@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 
 public class UserForm implements HasUserId, Serializable {
 
-    private String id;
+    private Long id;
 
     @Size(min = 3, max = 40, message = "length must be between 3 and 40 characters")
     private String username;
@@ -37,12 +37,11 @@ public class UserForm implements HasUserId, Serializable {
                 .setUsername(user.getUsername())
                 .setEmail(user.getEmail())
                 .setRegistration(user.getRegistration())
-                .setFirstLogin(user.getFirstLogin())
-                .setDefaultCustomerId(user.getDefaultCustomerId());
+                .setFirstLogin(user.getFirstLogin());
     }
 
     @Override
-    public String getUserId() {
+    public Long getUserId() {
         return id;
     }
 
@@ -51,11 +50,11 @@ public class UserForm implements HasUserId, Serializable {
         return "UserForm";
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public UserForm setId(String id) {
+    public UserForm setId(Long id) {
         this.id = id;
         return this;
     }
