@@ -1,6 +1,9 @@
 package com.dwalldorf.fuel.service;
 
 import com.dwalldorf.fuel.form.refueling.RefuelingForm;
+import com.dwalldorf.fuel.model.Car;
+import com.dwalldorf.fuel.model.Expense;
+import com.dwalldorf.fuel.model.ExpenseType;
 import com.dwalldorf.fuel.model.Refueling;
 import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.repository.RefuelingRepository;
@@ -34,8 +37,10 @@ public class RefuelingService {
 
     @Transactional
     public void save(Refueling refueling) {
-        refueling = refuelingRepository.save(refueling);
-        expenseService.calculateRefuelingExpenses(refueling);
+        if (refueling.getExpense() != null) {
+            expenseService.save(refueling.getExpense());
+        }
+        refuelingRepository.save(refueling);
     }
 
     public Refueling findById(Long id) {
@@ -48,22 +53,31 @@ public class RefuelingService {
     }
 
     public Refueling toModel(RefuelingForm form) {
-        Refueling refueling = new Refueling()
-                .setId(form.getId())
+        Car car = null;
+        if (form.getCarId() != null) {
+            car = carService.findById(form.getCarId());
+        }
+
+        User user = null;
+        if (form.getUserId() != null) {
+            user = userService.findById(form.getUserId());
+        }
+
+        Expense expense = new Expense()
+                .setCar(car)
+                .setType(ExpenseType.REFUELING)
                 .setKilometers(form.getKilometers())
+                .setCost(form.getCost());
+
+        return new Refueling()
+                .setId(form.getId())
+                .setUser(user)
                 .setLiters(form.getLiters())
-                .setCost(form.getCost())
                 .setDate(form.getDate())
+                .setCar(car)
+                .setExpense(expense)
                 .setComment(form.getComment());
 
-        if (form.getUserId() != null) {
-            refueling.setUser(userService.findById(form.getUserId()));
-        }
-        if (form.getCarId() != null) {
-            refueling.setCar(carService.findById(form.getCarId()));
-        }
-
-        return refueling;
     }
 
     public RefuelingForm fromModel(Refueling model) {
@@ -73,9 +87,9 @@ public class RefuelingService {
 
         RefuelingForm form = new RefuelingForm()
                 .setId(model.getId())
-                .setKilometers(model.getKilometers())
+                .setUserId(model.getUser().getId())
+                .setCarId(model.getCar().getId())
                 .setLiters(model.getLiters())
-                .setCost(model.getCost())
                 .setComment(model.getComment());
 
         if (model.getUser() != null) {
@@ -83,6 +97,10 @@ public class RefuelingService {
         }
         if (model.getCar() != null) {
             form.setCarId(model.getCar().getId());
+        }
+        if (model.getExpense() != null) {
+            form.setKilometers(model.getExpense().getKilometers())
+                .setCost(model.getExpense().getCost());
         }
 
         return form;

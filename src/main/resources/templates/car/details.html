@@ -11,6 +11,13 @@
             <h1>
                 <span th:text="${T(com.dwalldorf.fuel.format.CarFormatter).carDisplayName(car)}"></span>
             </h1>
+            <div id="car-details-links-container">
+                <ul>
+                    <li>
+                        <a th:href="@{/car/{carId}/expenses(carId=${car.id})}">Expenses</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

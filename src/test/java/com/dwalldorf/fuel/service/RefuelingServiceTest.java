@@ -69,9 +69,7 @@ public class RefuelingServiceTest extends BaseTest {
         Refueling model = refuelingService.toModel(form);
 
         assertEquals(id, model.getId());
-        assertEquals(kilometers, model.getKilometers());
         assertEquals(liters, model.getLiters());
-        assertEquals(cost, model.getCost());
         assertEquals(comment, model.getComment());
 
         assertNotNull(model.getUser());
@@ -93,18 +91,14 @@ public class RefuelingServiceTest extends BaseTest {
                 .setId(id)
                 .setUser(mockUser)
                 .setCar(mockCar)
-                .setKilometers(kilometers)
                 .setLiters(liters)
-                .setCost(cost)
                 .setComment(comment);
         final RefuelingForm form = refuelingService.fromModel(model);
 
         assertEquals(id, form.getId());
         assertEquals(userId, form.getUserId());
         assertEquals(carId, form.getCarId());
-        assertEquals(kilometers, form.getKilometers());
         assertEquals(liters, form.getLiters());
-        assertEquals(cost, form.getCost());
         assertEquals(comment, form.getComment());
     }
 }

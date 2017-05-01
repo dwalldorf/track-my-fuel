@@ -1,11 +1,14 @@
 package com.dwalldorf.fuel.service;
 
+import com.dwalldorf.fuel.form.refueling.RefuelingForm;
+import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.model.Expense;
 import com.dwalldorf.fuel.model.ExpenseType;
-import com.dwalldorf.fuel.model.Refueling;
 import com.dwalldorf.fuel.repository.ExpenseRepository;
+import java.util.List;
 import javax.inject.Inject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExpenseService {
@@ -20,20 +23,25 @@ public class ExpenseService {
         this.carService = carService;
     }
 
-    public void calculateRefuelingExpenses(Refueling refueling) {
-        final Float liters = refueling.getLiters();
-        final Float cost = refueling.getCost();
-
-        if (liters == null || cost == null) {
-            return;
-        }
+    @Transactional
+    public void calculateRefuelingExpenses(RefuelingForm refueling) {
+        final Car car = carService.findById(refueling.getCarId());
 
         Expense expense = new Expense()
-                .setCar(refueling.getCar())
+                .setCar(car)
                 .setType(ExpenseType.REFUELING)
-                .setCost(liters * cost)
-                .setRefueling(refueling);
+                .setCost(refueling.getCost())
+                .setKilometers(refueling.getKilometers());
 
         expenseRepository.save(expense);
+    }
+
+    @Transactional
+    public void save(Expense expense) {
+        expenseRepository.save(expense);
+    }
+
+    public List<Expense> findByCar(Car car) {
+        return expenseRepository.findByCar(car);
     }
 }

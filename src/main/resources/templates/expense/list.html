@@ -1,1 +1,50 @@
-expenses
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout::html-head('Refuelings')">
+</head>
+<body>
+<header th:replace="layout::site-header"></header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>
+                Expenses <span th:text="${T(com.dwalldorf.fuel.format.CarFormatter).carDisplayName(car)}"></span>
+                &nbsp;&nbsp;&nbsp;
+                <a class="btn btn-default" th:href="@{/expenses/add}">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </h1>
+
+            <table th:unless="${#lists.isEmpty(expenses)}" class="table table-striped table-hover">
+                <thead>
+                <th class="col-xs-4 col-sm-2 col-lg-1">Actions</th>
+                <th class="col-xs-4 col-sm-2 col-lg-1">Kilometers</th>
+                <th class="col-xs-4 col-sm-2 col-lg-1">Cost</th>
+                </thead>
+                <tbody>
+                <tr th:each="expense:${expenses}">
+                    <td>
+                        <a th:href="@{/expense/{id}/edit(id=${expense.id})}" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a th:href="@{/expense/{id}/delete(id=${expense.id})}" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <span th:text="*{expense.kilometers}"></span>
+                    </td>
+                    <td>
+                        <span th:text="*{expense.cost}"></span>&euro;
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="layout::site-footer"></footer>
+</body>
+</html>

@@ -8,11 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "expenses",indexes = @Index(columnList = "type"))
+@Table(name = "expenses", indexes = @Index(columnList = "type, date, kilometers"))
 public class Expense implements Serializable {
 
     @Id
@@ -21,20 +23,21 @@ public class Expense implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "car_id")
+    @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 
-    @Column
+    @Column(nullable = false)
     private ExpenseType type;
 
-    /**
-     * Only if related to refueling
-     */
-    @OneToOne
-    @JoinColumn(name = "refueling_id")
-    private Refueling refueling;
+    @Column(nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private DateTime date;
 
-    @Column
+    @Column(nullable = false)
+    private Long kilometers;
+
+    @Column(nullable = false)
     private Float cost;
 
     public Long getId() {
@@ -64,12 +67,21 @@ public class Expense implements Serializable {
         return this;
     }
 
-    public Refueling getRefueling() {
-        return refueling;
+    public DateTime getDate() {
+        return date;
     }
 
-    public Expense setRefueling(Refueling refueling) {
-        this.refueling = refueling;
+    public Expense setDate(DateTime date) {
+        this.date = date;
+        return this;
+    }
+
+    public Long getKilometers() {
+        return kilometers;
+    }
+
+    public Expense setKilometers(Long kilometers) {
+        this.kilometers = kilometers;
         return this;
     }
 

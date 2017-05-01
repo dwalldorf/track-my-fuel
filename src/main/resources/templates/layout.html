@@ -28,12 +28,12 @@
                         <a th:href="@{/}">Home</a>
                     </li>
                     <li role="presentation"
-                        th:classappend="${#httpServletRequest.getRequestURI().startsWith('/refueling')?'active':''}">
-                        <a th:href="@{/refueling}">Refuelings</a>
-                    </li>
-                    <li role="presentation"
                         th:classappend="${#httpServletRequest.getRequestURI().startsWith('/cars')?'active':''}">
                         <a th:href="@{/cars}">Cars</a>
+                    </li>
+                    <li role="presentation"
+                        th:classappend="${#httpServletRequest.getRequestURI().equals('/refueling/add')?'active':''}">
+                        <a th:href="@{/refueling/add}">Add Refueling</a>
                     </li>
                 </ul>
 

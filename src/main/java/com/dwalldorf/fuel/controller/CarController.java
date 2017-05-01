@@ -63,8 +63,8 @@ public class CarController {
     }
 
     @GetMapping(ROUTE_PREFIX)
-    public String indexAction() {
-        return listPage();
+    public String listPage() {
+        return VIEW_LIST;
     }
 
     @GetMapping(ROUTE_PAGE_DETAILS)
@@ -78,10 +78,6 @@ public class CarController {
         mav.addObject("car", car);
 
         return mav;
-    }
-
-    public String listPage() {
-        return VIEW_LIST;
     }
 
     @GetMapping(ROUTE_PAGE_ADD)
