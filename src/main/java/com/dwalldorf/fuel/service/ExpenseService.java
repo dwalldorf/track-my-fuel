@@ -44,4 +44,8 @@ public class ExpenseService {
     public List<Expense> findByCar(Car car) {
         return expenseRepository.findByCar(car);
     }
+
+    public Expense findById(Long id) {
+        return expenseRepository.findOne(id);
+    }
 }

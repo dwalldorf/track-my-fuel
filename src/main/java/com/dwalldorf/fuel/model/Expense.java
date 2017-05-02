@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -23,6 +24,9 @@ public class Expense implements Serializable {
     @GeneratedValue
     @Column(name = "expense_id")
     private Long id;
+
+    @OneToOne
+    private Refueling refueling;
 
     @ManyToOne
     @JoinColumn(name = "car_id", nullable = false)
@@ -49,6 +53,15 @@ public class Expense implements Serializable {
 
     public Expense setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public Refueling getRefueling() {
+        return refueling;
+    }
+
+    public Expense setRefueling(Refueling refueling) {
+        this.refueling = refueling;
         return this;
     }
 
