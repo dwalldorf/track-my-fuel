@@ -9,6 +9,7 @@ import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.repository.RefuelingRepository;
 import java.util.List;
 import javax.inject.Inject;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,9 +64,11 @@ public class RefuelingService {
             user = userService.findById(form.getUserId());
         }
 
+        final DateTime date = form.getDate();
         Expense expense = new Expense()
-                .setCar(car)
                 .setType(ExpenseType.REFUELING)
+                .setCar(car)
+                .setDate(date)
                 .setKilometers(form.getKilometers())
                 .setCost(form.getCost());
 
@@ -73,11 +76,10 @@ public class RefuelingService {
                 .setId(form.getId())
                 .setUser(user)
                 .setLiters(form.getLiters())
-                .setDate(form.getDate())
+                .setDate(date)
                 .setCar(car)
                 .setExpense(expense)
                 .setComment(form.getComment());
-
     }
 
     public RefuelingForm fromModel(Refueling model) {

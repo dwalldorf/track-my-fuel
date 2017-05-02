@@ -3,6 +3,8 @@ package com.dwalldorf.fuel.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
@@ -27,6 +29,7 @@ public class Expense implements Serializable {
     private Car car;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ExpenseType type;
 
     @Column(nullable = false)
