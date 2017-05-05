@@ -18,12 +18,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "expenses", indexes = @Index(columnList = "type, date, kilometers"))
-public class Expense implements Serializable {
+public class Expense implements HasUser, Serializable {
+
+    private static final String OBJECT_TYPE = "Expense";
 
     @Id
     @GeneratedValue
     @Column(name = "expense_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToOne
     private Refueling refueling;
@@ -53,6 +59,21 @@ public class Expense implements Serializable {
 
     public Expense setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    @Override
+    public String getObjectType() {
+        return OBJECT_TYPE;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    public Expense setUser(User user) {
+        this.user = user;
         return this;
     }
 

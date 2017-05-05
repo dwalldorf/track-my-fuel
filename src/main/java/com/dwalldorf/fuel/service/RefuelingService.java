@@ -38,10 +38,16 @@ public class RefuelingService {
 
     @Transactional
     public void save(Refueling refueling) {
-        if (refueling.getExpense() != null) {
-            expenseService.save(refueling.getExpense());
+        Expense expense = refueling.getExpense();
+        if (expense != null) {
+            expense = expenseService.save(expense);
         }
-        refuelingRepository.save(refueling);
+        refueling = refuelingRepository.save(refueling);
+
+        if (expense != null && expense.getRefueling() == null) {
+            expense.setRefueling(refueling);
+            expenseService.save(expense);
+        }
     }
 
     public Refueling findById(Long id) {

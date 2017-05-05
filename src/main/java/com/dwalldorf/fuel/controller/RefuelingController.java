@@ -4,6 +4,7 @@ import com.dwalldorf.fuel.exception.NotFoundException;
 import com.dwalldorf.fuel.form.refueling.RefuelingForm;
 import com.dwalldorf.fuel.model.Car;
 import com.dwalldorf.fuel.model.Refueling;
+import com.dwalldorf.fuel.model.User;
 import com.dwalldorf.fuel.service.CarService;
 import com.dwalldorf.fuel.service.ExpenseService;
 import com.dwalldorf.fuel.service.RefuelingService;
@@ -106,7 +107,9 @@ public class RefuelingController {
             }
             userService.verifyOwner(persistedRefueling);
         } else {
-            refueling.setUser(userService.getCurrentUser());
+            final User currentUser = userService.getCurrentUser();
+            refueling.setUser(currentUser);
+            refueling.getExpense().setUser(currentUser);
         }
 
         refuelingService.save(refueling);
